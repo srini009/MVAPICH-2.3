@@ -111,6 +111,9 @@ cvars:
 === END_MPI_T_CVAR_INFO_BLOCK ===
 */
 
+MPIR_T_PVAR_ULONG2_HIGHWATERMARK_DECL_EXTERN(MV2, mv2_bcast_max_message_size);
+MPIR_T_PVAR_ULONG2_LOWWATERMARK_DECL_EXTERN(MV2, mv2_bcast_min_message_size);
+
 /* -- Begin Profiling Symbol Block for routine MPI_Bcast */
 #if defined(HAVE_PRAGMA_WEAK)
 #pragma weak MPI_Bcast = PMPI_Bcast
@@ -1605,6 +1608,10 @@ int MPI_Bcast( void *buffer, int count, MPI_Datatype datatype, int root,
     /* ... end of body of routine ... */
     
   fn_exit:
+    /*Update watermarks*/
+	MPIR_T_PVAR_UINT_HIGHWATERMARK_UPDATE(MV2, mv2_bcast_max_message_size, count*sizeof(datatype));
+	MPIR_T_PVAR_UINT_LOWWATERMARK_UPDATE(MV2, mv2_bcast_min_message_size, count*sizeof(datatype));
+
     MPID_MPI_COLL_FUNC_EXIT(MPID_STATE_MPI_BCAST);
     MPID_THREAD_CS_EXIT(GLOBAL, MPIR_THREAD_GLOBAL_ALLFUNC_MUTEX);
     return mpi_errno;

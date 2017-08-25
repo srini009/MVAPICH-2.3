@@ -126,6 +126,8 @@ MPIR_T_PVAR_ULONG2_HIGHWATERMARK_DECL(MV2, mv2_allreduce_max_message_size);
 MPIR_T_PVAR_ULONG2_LOWWATERMARK_DECL(MV2, mv2_allreduce_min_message_size);
 MPIR_T_PVAR_ULONG2_HIGHWATERMARK_DECL(MV2, mv2_reduce_max_message_size);
 MPIR_T_PVAR_ULONG2_LOWWATERMARK_DECL(MV2, mv2_reduce_min_message_size);
+MPIR_T_PVAR_ULONG2_HIGHWATERMARK_DECL(MV2, mv2_bcast_max_message_size);
+MPIR_T_PVAR_ULONG2_LOWWATERMARK_DECL(MV2, mv2_bcast_min_message_size);
 
 MPIR_T_PVAR_ULONG_COUNTER_DECL(MV2, rdma_ud_retransmissions);
 
@@ -133,6 +135,28 @@ void
 MPIT_REGISTER_MV2_VARIABLES (void)
 {
     MPIR_T_PVAR_HIGHWATERMARK_REGISTER_STATIC(
+            MV2,
+            MPI_UNSIGNED_LONG_LONG,
+            mv2_bcast_max_message_size,
+			0,
+            MPI_T_VERBOSITY_USER_BASIC,
+            MPI_T_BIND_MPI_COMM,
+            (MPIR_T_PVAR_FLAG_READONLY | MPIR_T_PVAR_FLAG_CONTINUOUS),
+            "CH3", /* category name */
+            "Maximum message size used in MPI_Bcast");
+    
+	MPIR_T_PVAR_LOWWATERMARK_REGISTER_STATIC(
+            MV2,
+            MPI_UNSIGNED_LONG_LONG,
+            mv2_bcast_min_message_size,
+			4294967295, /*Maximum 32-bit unsigned value to be on the safer side*/
+            MPI_T_VERBOSITY_USER_BASIC,
+            MPI_T_BIND_MPI_COMM,
+            (MPIR_T_PVAR_FLAG_READONLY | MPIR_T_PVAR_FLAG_CONTINUOUS),
+            "CH3", /* category name */
+            "Minimum message size used in MPI_Bcast");
+    
+	MPIR_T_PVAR_HIGHWATERMARK_REGISTER_STATIC(
             MV2,
             MPI_UNSIGNED_LONG_LONG,
             mv2_reduce_max_message_size,
