@@ -72,6 +72,9 @@ cvars:
 === END_MPI_T_CVAR_INFO_BLOCK ===
 */
 
+/*MAGICIAN*/
+MPIR_T_PVAR_ULONG2_HIGHWATERMARK_DECL_EXTERN(MV2, mv2_allreduce_max_message_size);
+
 /* -- Begin Profiling Symbol Block for routine MPI_Allreduce */
 #if defined(HAVE_PRAGMA_WEAK)
 #pragma weak MPI_Allreduce = PMPI_Allreduce
@@ -920,6 +923,9 @@ int MPI_Allreduce(const void *sendbuf, void *recvbuf, int count,
     /* ... end of body of routine ... */
     
   fn_exit:
+    /*Update watermarks*/
+	MPIR_T_PVAR_UINT_HIGHWATERMARK_UPDATE(MV2, mv2_allreduce_max_message_size, count*sizeof(datatype));
+
     MPID_MPI_COLL_FUNC_EXIT(MPID_STATE_MPI_ALLREDUCE);
     MPID_THREAD_CS_EXIT(GLOBAL, MPIR_THREAD_GLOBAL_ALLFUNC_MUTEX);
     return mpi_errno;
